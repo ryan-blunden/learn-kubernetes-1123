@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: webapp
+  labels:
+    run: webapp
+spec:
+  containers:
+    - name: httpd
+      image: httpd
+      ports:
+        - containerPort: 80
+      env:
+        - name: APACHE_HOST
+          value: site.io
+      resources:
+        limits:
+          memory: '128Mi'
+          cpu: '250m'
+    - name: redis
+      image: redis:alpine
+      env:
+        - name: ALLOW_EMPTY_PASSWORD
+          value: yes
+      resources:
+        limits:
+          memory: '128Mi'
+          cpu: '250m'
