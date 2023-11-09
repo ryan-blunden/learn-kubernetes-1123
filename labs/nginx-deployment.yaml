@@ -5,11 +5,11 @@ metadata:
   labels:
     app: nginx
 spec:
-  replicas: 3
+  replicas: 5
   selector:
     matchLabels:
       app: nginx
-  minReadySeconds: 30
+  minReadySeconds: 10
   progressDeadlineSeconds: 600
   revisionHistoryLimit: 10
   strategy:
@@ -24,11 +24,9 @@ spec:
     metadata:
       labels:
         app: nginx
-      annotations:
-          kubernetes.io/change-cause: Initial deploy
     spec:
       containers:
       - name: nginx
-        image: nginx:1.23-alpine # nginx:1.24-alpine, nginx:1.25-alpine
+        image: nginx:1.24 # nginx:1.24-alpine, nginx:1.25-alpine
         ports:
         - containerPort: 80
