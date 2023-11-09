@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: devjokes
+  labels:
+    name: devjokes
+spec:
+  containers:
+    - name: devjokes
+      image: devjokes
+      imagePullPolicy: IfNotPresent
+      ports:
+        - containerPort: 8000
+      resources:
+        limits:
+          memory: '128Mi'
+          cpu: '250m'
+      livenessProbe:
+        httpGet:
+          path: /healthy
+          port: 8000

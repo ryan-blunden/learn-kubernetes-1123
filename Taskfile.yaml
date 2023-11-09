@@ -1,0 +1,17 @@
+version: '3'
+
+tasks:
+  devjokes:build:
+    cmds:
+      - cd labs/containers/devjokes && minikube image build -t devjokes .
+
+  mandaloriangifs:build:
+    cmds:
+      - git clone https://github.com/DopplerUniversity/mandalorian-gifs-python.git
+      - cd mandalorian-gifs-python
+      - minikube image build -t mandalorian-gifs-python .
+      - rm -fr mandalorian-gifs-python
+
+  debug-pod:
+    cmds:
+      - kubectl run debug --rm -it --image alpine -- sh

@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx
+  labels:
+    app: nginx
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx
+  minReadySeconds: 30
+  progressDeadlineSeconds: 600
+  revisionHistoryLimit: 10
+  strategy:
+    rollingUpdate:
+      # Rolling
+      maxUnavailable: 20%
+      maxSurge: 0%
+      # Blue/Green
+      # maxUnavailable: 0%
+      # maxSurge: 100%
+  template:
+    metadata:
+      labels:
+        app: nginx
+      annotations:
+          kubernetes.io/change-cause: Initial deploy
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.23-alpine # nginx:1.24-alpine, nginx:1.25-alpine
+        ports:
+        - containerPort: 80
