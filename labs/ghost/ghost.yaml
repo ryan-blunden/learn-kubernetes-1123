@@ -1,0 +1,70 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: ghost-pv-volume
+  labels:
+    type: local
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: /data/ghost-content
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: ghost-pv-claim
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ghost
+spec:
+  type: LoadBalancer
+  selector:
+    app: ghost
+  ports:
+    - protocol: TCP
+      port: 2368
+      targetPort: 2368
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ghost
+spec:
+  selector:
+    matchLabels:
+      app: ghost
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: ghost
+    spec:
+      containers:
+        - name: ghost
+          image: ghost:latest
+          envFrom:
+            - secretRef:
+                name: ghost-credentials
+          ports:
+            - containerPort: 2368
+          volumeMounts:
+            - name: ghost-content
+              mountPath: /var/lib/ghost/content
+      volumes:
+        - name: ghost-content
+          persistentVolumeClaim:
+            claimName: ghost-pv-claim
